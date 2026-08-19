@@ -89,7 +89,10 @@
 ::deep .schedule-row {
     display: grid;
     grid-template-columns: 160px repeat(6, minmax(0, 1fr));
-    border-bottom: 1px solid var(--kendo-color-border-alt);
+    /* Three-tier line hierarchy (day separator > agent row > hour tick) so the eye
+       reads day boundaries first, then agents, with hour ticks staying in the
+       background instead of competing with either. */
+    border-bottom: 1px solid color-mix(in srgb, var(--kendo-color-on-app-surface) 14%, transparent);
 }
 
 ::deep .schedule-row:last-child {
@@ -101,7 +104,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-right: 1px solid var(--kendo-color-border-alt);
+    border-right: 2px solid var(--kendo-color-border);
     background: var(--kendo-color-app-surface);
     min-width: 0;
 }
@@ -136,15 +139,29 @@
 }
 
 ::deep .schedule-hour-ticks {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    position: relative;
+    height: 0.9rem;
     font-size: 0.62rem;
     color: var(--kendo-color-subtle);
     margin-top: 0.25rem;
 }
 
+/* 13 boundary marks positioned by the inline `left: X%` set in ScheduleHeader,
+   not a 12-column grid - there's no cell left over for a 13th item to sit in,
+   which is what was pushing it onto a second line. */
 ::deep .schedule-hour-ticks span {
-    text-align: center;
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+::deep .schedule-hour-ticks span:first-child {
+    transform: translateX(0);
+}
+
+::deep .schedule-hour-ticks span:last-child {
+    transform: translateX(-100%);
 }
 
 ::deep .agent-name-primary {
@@ -172,8 +189,8 @@
         to right,
         transparent 0,
         transparent calc(100% / 12 - 1px),
-        var(--kendo-color-border-alt) calc(100% / 12 - 1px),
-        var(--kendo-color-border-alt) calc(100% / 12)
+        color-mix(in srgb, var(--kendo-color-on-app-surface) 8%, transparent) calc(100% / 12 - 1px),
+        color-mix(in srgb, var(--kendo-color-on-app-surface) 8%, transparent) calc(100% / 12)
     );
 }
 
@@ -237,7 +254,14 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding-right: 1.1rem;
+}
+
+/* Only conflict blocks render the ⚠ overlay, so only they need the extra
+   right padding to keep it from sitting on top of the time text - applying
+   this to every narrow block regardless of conflict wasted space and made
+   ordinary (non-conflict) narrow blocks clip instead. */
+::deep .schedule-block.is-narrow.is-conflict {
+    padding-right: 1rem;
 }
 
 ::deep .conflict-icon {

@@ -1,12 +1,34 @@
 @page "/"
 @page "/home"
 @inject NavigationManager Navigation
+@inject IScheduleService ScheduleService
 
 <PageTitle>Home | Sales Agent Weekly Schedule</PageTitle>
 <ThemeStylesheet />
 
 <div class="home-hero">
+    <TelerikSvgIcon Icon="@SvgIcon.Calendar" Class="home-hero-icon" />
     <h1>Sales Agent Weekly Schedule</h1>
-    <p>Cobalt Communications — sales team scheduling, built with Blazor Web App and Telerik UI for Blazor.</p>
-    <TelerikButton ThemeColor="primary" OnClick="@(() => Navigation.NavigateTo("/schedule"))">Open Weekly Schedule</TelerikButton>
+    <p class="home-hero-lead">Plan and review your sales team's weekly schedule in one place.</p>
+    <p class="home-hero-sub">View agent availability, shifts, tentative assignments, and scheduling conflicts from Monday through Saturday.</p>
+
+    <TelerikButton ThemeColor="primary" Class="home-cta" OnClick="@(() => Navigation.NavigateTo("/schedule"))">
+        Open Weekly Schedule
+        <TelerikSvgIcon Icon="@SvgIcon.ArrowRight" />
+    </TelerikButton>
+
+    <div class="home-stats">
+        <div class="home-stat">
+            <TelerikSvgIcon Icon="@SvgIcon.Calendar" />
+            <span>Monday–Saturday</span>
+        </div>
+        <div class="home-stat">
+            <TelerikSvgIcon Icon="@SvgIcon.Clock" />
+            <span>7 AM – 7 PM</span>
+        </div>
+        <div class="home-stat">
+            <TelerikSvgIcon Icon="@SvgIcon.Users" />
+            <span>@(ScheduleService.GetAgents().Count) sales agents</span>
+        </div>
+    </div>
 </div>

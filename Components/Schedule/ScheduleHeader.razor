@@ -1,15 +1,16 @@
 @namespace Cobalt.SalesAgentSchedule.Components.Schedule
 
 <div class="schedule-row schedule-header-row">
-    <div class="schedule-label-cell"></div>
+    <div class="schedule-label-cell schedule-corner-label">Agent</div>
     @foreach (var day in WeekDays)
     {
         <div class="schedule-day-header">
             <div class="schedule-day-title">@day.DayOfWeek <span class="schedule-day-date">@day.ToString("MM/dd")</span></div>
             <div class="schedule-hour-ticks">
-                @for (var hour = ScheduleTimes.StartHour; hour < ScheduleTimes.EndHour; hour++)
+                @for (var hour = ScheduleTimes.StartHour; hour <= ScheduleTimes.EndHour; hour++)
                 {
-                    <span>@FormatHour(hour)</span>
+                    var position = (hour - ScheduleTimes.StartHour) / (double)ScheduleTimes.TotalHours * 100;
+                    <span style="left: @(position.ToString(System.Globalization.CultureInfo.InvariantCulture))%">@FormatHour(hour)</span>
                 }
             </div>
         </div>
@@ -21,7 +22,9 @@
     public IReadOnlyList<DateOnly> WeekDays { get; set; } = Array.Empty<DateOnly>();
 
     // Bare hour numbers (no AM/PM suffix) - the 7 AM-7 PM window is already stated
-    // in the page header, so repeating "a"/"p" on all twelve ticks was just noise.
+    // in the page header, so repeating "a"/"p" on all thirteen ticks was just noise.
+    // 13 boundary marks for 12 slots (7,8,...,6,7) - hour=19 (EndHour) naturally
+    // formats to "7" via the >12 branch, closing the day at its right edge.
     private static string FormatHour(int hour) => hour switch
     {
         12 => "12",

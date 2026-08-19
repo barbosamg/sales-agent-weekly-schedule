@@ -11,9 +11,13 @@
     {
         <span class="conflict-icon" aria-hidden="true">⚠</span>
     }
-    <span class="block-time">@CompactTimeRange</span>
-    @if (!IsNarrow)
+    @if (IsNarrow)
     {
+        <span class="block-time">@NarrowLabel</span>
+    }
+    else
+    {
+        <span class="block-time">@CompactTimeRange</span>
         <span class="block-title">@Block.Entry.Title</span>
     }
 </div>
@@ -55,10 +59,26 @@
     /// <summary>
     /// Blocks 2h or shorter don't have room for a time line *and* a legible title
     /// line — showing both just produces two truncated fragments (e.g. "2p.." /
-    /// "Pr.."). Narrow blocks show only the time; full details stay one tap/hover
-    /// away via the tooltip and dialog.
+    /// "Pr.."). Narrow blocks show only the start hour; full details stay one
+    /// tap/hover away via the tooltip and dialog.
     /// </summary>
     private bool IsNarrow => (Block.Entry.End - Block.Entry.Start).TotalHours <= 2;
+
+    /// <summary>
+    /// Bare start hour ("8", "2") for narrow blocks — even the compact "8a–10a"
+    /// range doesn't reliably fit a ~36px 2h block (worst case "10a–12p" needs ~43px
+    /// of text in ~24px of available content width). Bare numbers also match the
+    /// header's own hour-tick formatting, so the block visually lines up with its
+    /// start tick instead of introducing a different notation.
+    /// </summary>
+    private string NarrowLabel => FormatBareHour(Block.Entry.Start.Hour);
+
+    private static string FormatBareHour(int hour) => hour switch
+    {
+        12 => "12",
+        > 12 => $"{hour - 12}",
+        _ => $"{hour}",
+    };
 
     private static string FormatHour(TimeOnly t)
     {
