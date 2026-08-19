@@ -27,7 +27,7 @@
                 <dt>Status</dt>
                 <dd>
                     <span class="status-pill @(IsConflict ? "is-conflict" : Entry.Kind == ShiftKind.Tentative ? "is-tentative" : "is-confirmed")">
-                        @(IsConflict ? "⚠ Scheduling conflict" : Entry.Kind == ShiftKind.Tentative ? "◌ Tentative" : "✓ Confirmed")
+                        @(IsConflict ? "⚠ Scheduling conflict" : Entry.Kind == ShiftKind.Tentative ? "Tentative" : "✓ Confirmed")
                     </span>
                 </dd>
             </dl>

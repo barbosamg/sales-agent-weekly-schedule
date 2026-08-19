@@ -17,6 +17,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddTelerikBlazor();
 builder.Services.AddSingleton<IScheduleService, MockScheduleService>();
+builder.Services.AddScoped<ThemeService>();
 
 var app = builder.Build();
 

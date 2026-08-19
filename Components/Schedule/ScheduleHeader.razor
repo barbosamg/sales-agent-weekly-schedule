@@ -20,10 +20,12 @@
     [Parameter, EditorRequired]
     public IReadOnlyList<DateOnly> WeekDays { get; set; } = Array.Empty<DateOnly>();
 
+    // Bare hour numbers (no AM/PM suffix) - the 7 AM-7 PM window is already stated
+    // in the page header, so repeating "a"/"p" on all twelve ticks was just noise.
     private static string FormatHour(int hour) => hour switch
     {
-        12 => "12p",
-        > 12 => $"{hour - 12}p",
-        _ => $"{hour}a",
+        12 => "12",
+        > 12 => $"{hour - 12}",
+        _ => $"{hour}",
     };
 }

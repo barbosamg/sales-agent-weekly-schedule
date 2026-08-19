@@ -32,21 +32,23 @@
     border: 1px solid transparent;
 }
 
+/* Same fixed palette as the schedule blocks (see Schedule.razor.css) so a
+   status reads as the same color whether seen on the grid or in this dialog. */
 .status-pill.is-confirmed {
-    background: var(--kendo-color-success-subtle);
-    color: var(--kendo-color-success-on-subtle);
-    border-color: var(--kendo-color-success);
+    background: #334155;
+    color: #ffffff;
+    border-color: #1e293b;
 }
 
 .status-pill.is-tentative {
-    background: var(--kendo-color-warning-subtle);
-    color: var(--kendo-color-warning-on-subtle);
-    border-color: var(--kendo-color-warning);
+    background: #fef3c7;
+    color: #78350f;
+    border-color: #d97706;
     border-style: dashed;
 }
 
 .status-pill.is-conflict {
-    background: var(--kendo-color-error-subtle);
-    color: var(--kendo-color-error-on-subtle);
-    border-color: var(--kendo-color-error);
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #dc2626;
 }

@@ -1,0 +1,38 @@
+@namespace Cobalt.SalesAgentSchedule.Components.Layout
+@inject ThemeService ThemeService
+@implements IDisposable
+
+@* The light Meridian theme is a static <link> in App.razor's initial HTML shell, so
+   it's present from the very first paint with zero flash. HeadContent only takes
+   effect once the interactive circuit connects, which is too late to avoid a flash
+   of unstyled/oversized icons if the theme link lived here instead — so this
+   component only ever adds the DARK override on top of that static baseline, never
+   replaces it outright. Toggling back to light just removes the override. *@
+<HeadContent>
+    @if (ThemeService.IsDark)
+    {
+        <link rel="stylesheet" href="css/kendo-theme-meridian-dark.css" />
+    }
+    @ChildContent
+</HeadContent>
+
+@code {
+    /// <summary>
+    /// Extra &lt;head&gt; markup for the hosting page. HeadOutlet only recognizes one
+    /// active HeadContent per page, so any other page-specific head content (e.g. the
+    /// appointment dialog CSS) must be passed in here rather than declared alongside
+    /// this component as a separate &lt;HeadContent&gt; block.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnChange -= StateHasChanged;
+    }
+}

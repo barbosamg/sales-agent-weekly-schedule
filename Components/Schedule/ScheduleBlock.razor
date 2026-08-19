@@ -1,6 +1,6 @@
 @namespace Cobalt.SalesAgentSchedule.Components.Schedule
 
-<div class="schedule-block @(Block.Entry.Kind == ShiftKind.Tentative ? "is-tentative" : "is-confirmed") @(Block.IsConflict ? "is-conflict" : "")"
+<div class="schedule-block @(Block.Entry.Kind == ShiftKind.Tentative ? "is-tentative" : "is-confirmed") @(Block.IsConflict ? "is-conflict" : "") @(IsNarrow ? "is-narrow" : "")"
      style="@Style"
      tabindex="0"
      role="button"
@@ -11,17 +11,16 @@
     {
         <span class="conflict-icon" aria-hidden="true">⚠</span>
     }
-    else if (Block.Entry.Kind == ShiftKind.Tentative)
+    <span class="block-time">@CompactTimeRange</span>
+    @if (!IsNarrow)
     {
-        <span class="tentative-icon" aria-hidden="true">◌</span>
+        <span class="block-title">@Block.Entry.Title</span>
     }
-    <span class="block-time">@Block.Entry.Start.ToString("h:mmtt")–@Block.Entry.End.ToString("h:mmtt")</span>
-    <span class="block-title">@Block.Entry.Title</span>
 </div>
 
 @code {
-    private const double LaneHeightPx = 40;
-    private const double LaneGapPx = 6;
+    private const double LaneHeightPx = 36;
+    private const double LaneGapPx = 4;
 
     [Parameter, EditorRequired]
     public PositionedBlock Block { get; set; } = null!;
@@ -44,6 +43,28 @@
                    $"top: {top.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; " +
                    $"height: {LaneHeightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px;";
         }
+    }
+
+    /// <summary>
+    /// Short "7a–3p" style range. All mock entries fall on the hour, so minutes are
+    /// always :00 and safe to drop — this keeps the time legible even in the
+    /// narrowest (1-2 hour) blocks, where "7:00AM–9:00AM" would just get clipped.
+    /// </summary>
+    private string CompactTimeRange => $"{FormatHour(Block.Entry.Start)}–{FormatHour(Block.Entry.End)}";
+
+    /// <summary>
+    /// Blocks 2h or shorter don't have room for a time line *and* a legible title
+    /// line — showing both just produces two truncated fragments (e.g. "2p.." /
+    /// "Pr.."). Narrow blocks show only the time; full details stay one tap/hover
+    /// away via the tooltip and dialog.
+    /// </summary>
+    private bool IsNarrow => (Block.Entry.End - Block.Entry.Start).TotalHours <= 2;
+
+    private static string FormatHour(TimeOnly t)
+    {
+        var hour12 = t.Hour % 12 == 0 ? 12 : t.Hour % 12;
+        var suffix = t.Hour < 12 ? "a" : "p";
+        return $"{hour12}{suffix}";
     }
 
     private string TooltipText

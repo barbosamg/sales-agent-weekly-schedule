@@ -1,13 +1,43 @@
 @namespace Cobalt.SalesAgentSchedule.Components.Layout
+@inject ThemeService ThemeService
+@implements IDisposable
 
 <div class="nav-sidebar">
     <div class="nav-brand">
-        <span class="nav-brand-title">Cobalt Communications</span>
-        <span class="nav-brand-subtitle">Sales Operations</span>
+        <span class="nav-brand-title">Sales Operations</span>
+        <span class="nav-brand-subtitle">Agent Scheduling</span>
     </div>
 
     <nav class="nav-links">
-        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">Home</NavLink>
-        <NavLink class="nav-link" href="schedule">Weekly Schedule</NavLink>
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <TelerikSvgIcon Icon="@SvgIcon.Home" />
+            <span>Home</span>
+        </NavLink>
+        <NavLink class="nav-link" href="schedule">
+            <TelerikSvgIcon Icon="@SvgIcon.Calendar" />
+            <span>Weekly Schedule</span>
+        </NavLink>
     </nav>
+
+    <div class="nav-footer">
+        <TelerikButton OnClick="ThemeService.Toggle"
+                       Class="theme-toggle"
+                       FillMode="@ThemeConstants.Button.FillMode.Flat"
+                       Icon="@SvgIcon.Palette"
+                       Title="Switch theme">
+            @(ThemeService.IsDark ? "Light theme" : "Dark theme")
+        </TelerikButton>
+    </div>
 </div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ThemeService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnChange -= StateHasChanged;
+    }
+}
