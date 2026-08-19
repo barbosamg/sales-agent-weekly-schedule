@@ -256,10 +256,23 @@
     text-align: center;
 }
 
-/* Only conflict blocks render the ⚠ overlay, so only they need the extra
-   right padding to keep it from sitting on top of the time text - applying
-   this to every narrow block regardless of conflict wasted space and made
-   ordinary (non-conflict) narrow blocks clip instead. */
+/* The ⚠ icon is absolutely positioned (see .conflict-icon below), so it
+   reserves no space of its own in the flex flow - without this, block-time
+   (left-aligned and sized to its own text, unaffected by padding on an
+   ancestor) visually ran underneath the icon on wider conflict blocks, e.g.
+   "9a-12p" overlapping the warning glyph instead of stopping short of it.
+   :not(.is-narrow) matters here: narrow blocks already lose width to the
+   padding-right rule below, and stacking both reserves the icon's space
+   twice - this max-width, computed against that *already-shrunk* 100%,
+   went negative and made the single-digit label disappear entirely. */
+::deep .schedule-block.is-conflict:not(.is-narrow) .block-time {
+    max-width: calc(100% - 0.9rem);
+}
+
+/* Narrow blocks center block-time via align-items/justify-content, so unlike
+   the left-aligned case above, padding-right here *does* shift the centering
+   point (it shrinks the content box centering is computed against) - moving
+   the single-digit label clear of the icon instead of a no-op. */
 ::deep .schedule-block.is-narrow.is-conflict {
     padding-right: 1rem;
 }
