@@ -1,0 +1,19 @@
+.home-hero {
+    max-width: 640px;
+    margin: 4rem auto 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.home-hero h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.home-hero p {
+    color: var(--kendo-color-subtle);
+    margin: 0;
+}

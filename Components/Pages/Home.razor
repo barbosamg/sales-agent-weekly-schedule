@@ -1,0 +1,11 @@
+@page "/"
+@page "/home"
+@inject NavigationManager Navigation
+
+<PageTitle>Home | Sales Agent Weekly Schedule</PageTitle>
+
+<div class="home-hero">
+    <h1>Sales Agent Weekly Schedule</h1>
+    <p>Cobalt Communications — sales team scheduling, built with Blazor Web App and Telerik UI for Blazor.</p>
+    <TelerikButton ThemeColor="primary" OnClick="@(() => Navigation.NavigateTo("/schedule"))">Open Weekly Schedule</TelerikButton>
+</div>
