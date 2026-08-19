@@ -195,6 +195,8 @@ largura = duração / 12
 
 Essa abordagem permite manter os seis dias fluidos dentro da largura disponível da página.
 
+O horário inicial e final de cada compromisso é limitado (`Math.Clamp`) à janela de 7h–19h antes desse cálculo: um compromisso mockado que começasse antes das 7h ou terminasse depois das 19h continua sendo posicionado inteiramente dentro da célula do dia (e não vaza para o dia seguinte) — o texto do bloco, o tooltip e a janela de detalhes continuam mostrando o horário real, só a barra visual respeita o limite da janela de trabalho.
+
 ---
 
 ## Conflitos de horário
@@ -336,7 +338,7 @@ Os dados incluem diferentes cenários para demonstrar o comportamento da interfa
 * compromissos provisórios;
 * conflitos de horário.
 
-A aplicação contém **6 agentes** e, em cada padrão semanal (Previous/Current/Next Week), entre **15 e 21 blocos** de agenda — acima do mínimo de 5 agentes e 12 blocos exigido.
+A aplicação contém **6 agentes** e, em cada padrão semanal (Previous/Current/Next Week), entre **15 e 26 blocos** de agenda — acima do mínimo de 5 agentes e 12 blocos exigido. O padrão da semana atual inclui ainda dois cenários extras: um compromisso que começa antes das 7h e termina depois das 19h (testando o recorte visual na janela de horário) e um dia com 4 compromissos consecutivos, sem gaps, cobrindo as 12 horas inteiras.
 
 ---
 

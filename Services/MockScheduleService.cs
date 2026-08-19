@@ -42,6 +42,12 @@ public class MockScheduleService : IScheduleService
         new(13, 4, DayOfWeek.Wednesday, new(10, 0), new(14, 0), "Contract Negotiation", "Customer G", ShiftKind.Confirmed),
         new(14, 4, DayOfWeek.Wednesday, new(13, 0), new(15, 0), "Internal Sync", null, ShiftKind.Tentative),
         new(15, 4, DayOfWeek.Friday, new(7, 0), new(12, 0), "Morning Shift", null, ShiftKind.Confirmed),
+        // Fully packed day: 4 distinct, back-to-back entries covering the entire 7 AM-7 PM
+        // window with zero gaps and zero overlap (each ends exactly when the next starts).
+        new(22, 4, DayOfWeek.Thursday, new(7, 0), new(10, 0), "Morning Calls", null, ShiftKind.Confirmed),
+        new(23, 4, DayOfWeek.Thursday, new(10, 0), new(13, 0), "Client Meetings", "Customer K", ShiftKind.Confirmed),
+        new(24, 4, DayOfWeek.Thursday, new(13, 0), new(16, 0), "Afternoon Follow-ups", null, ShiftKind.Tentative),
+        new(25, 4, DayOfWeek.Thursday, new(16, 0), new(19, 0), "Wrap-up & Reports", null, ShiftKind.Confirmed),
 
         new(16, 5, DayOfWeek.Monday, new(7, 0), new(19, 0), "Extended Shift", null, ShiftKind.Confirmed),
         new(17, 5, DayOfWeek.Thursday, new(10, 0), new(12, 0), "Site Visit", "Customer H", ShiftKind.Confirmed),
@@ -50,6 +56,10 @@ public class MockScheduleService : IScheduleService
         new(19, 6, DayOfWeek.Tuesday, new(7, 0), new(9, 0), "Store Opening", null, ShiftKind.Confirmed),
         new(20, 6, DayOfWeek.Wednesday, new(15, 0), new(19, 0), "Store Closing", null, ShiftKind.Confirmed),
         new(21, 6, DayOfWeek.Friday, new(13, 0), new(17, 0), "After-sales Support", "Customer J", ShiftKind.Confirmed),
+        // Starts before 7 AM and ends after 7 PM - visually clamped to the full 7-19 window
+        // by ScheduleBlock's VisibleStartHours/VisibleEndHours, real time still shown in the
+        // tooltip/dialog.
+        new(26, 6, DayOfWeek.Saturday, new(4, 0), new(22, 0), "All-Day Coverage", null, ShiftKind.Confirmed),
     };
 
     // Pattern B — next week

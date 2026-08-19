@@ -32,10 +32,8 @@
     {
         get
         {
-            var startHours = Block.Entry.Start.ToTimeSpan().TotalHours - ScheduleTimes.StartHour;
-            var durationHours = (Block.Entry.End - Block.Entry.Start).TotalHours;
-            var leftPercent = startHours / ScheduleTimes.TotalHours * 100;
-            var widthPercent = durationHours / ScheduleTimes.TotalHours * 100;
+            var leftPercent = (VisibleStartHours - ScheduleTimes.StartHour) / ScheduleTimes.TotalHours * 100;
+            var widthPercent = (VisibleEndHours - VisibleStartHours) / ScheduleTimes.TotalHours * 100;
             var top = Block.Lane * (LaneHeightPx + LaneGapPx);
 
             return $"left: calc({leftPercent.ToString(System.Globalization.CultureInfo.InvariantCulture)}% + 2px); " +
@@ -44,6 +42,13 @@
                    $"height: {LaneHeightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px;";
         }
     }
+
+    // Clamped to the 7 AM-7 PM window: an entry that starts/ends outside it (data error,
+    // or a future non-mock source) still renders fully inside the day cell instead of
+    // overflowing into the next day's column - the tooltip/dialog still show the real time.
+    private double VisibleStartHours => Math.Clamp(Block.Entry.Start.ToTimeSpan().TotalHours, ScheduleTimes.StartHour, ScheduleTimes.EndHour);
+
+    private double VisibleEndHours => Math.Clamp(Block.Entry.End.ToTimeSpan().TotalHours, ScheduleTimes.StartHour, ScheduleTimes.EndHour);
 
     /// <summary>
     /// Warning glyph rendered inline, in normal text flow, right before the time -
@@ -76,7 +81,7 @@
     /// show only the start hour; full details stay one tap/hover away via the
     /// tooltip and dialog.
     /// </summary>
-    private bool IsNarrow => (Block.Entry.End - Block.Entry.Start).TotalHours <= 2;
+    private bool IsNarrow => (VisibleEndHours - VisibleStartHours) <= 2;
 
     private string NarrowLabel => FormatBareHour(Block.Entry.Start.Hour);
 
