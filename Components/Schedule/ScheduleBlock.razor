@@ -73,7 +73,7 @@
     /// Dropping "a"/"p" buys back the width the warning icon now costs inline,
     /// and all mock entries fall on the hour so there are no minutes to lose.
     /// </summary>
-    private string CompactTimeRange => $"{FormatBareHour(Block.Entry.Start.Hour)}–{FormatBareHour(Block.Entry.End.Hour)}";
+    private string CompactTimeRange => $"{FormatBareTime(Block.Entry.Start)}–{FormatBareTime(Block.Entry.End)}";
 
     /// <summary>
     /// Blocks 2h or shorter don't have room for a time line *and* a legible title
@@ -83,7 +83,15 @@
     /// </summary>
     private bool IsNarrow => (VisibleEndHours - VisibleStartHours) <= 2;
 
-    private string NarrowLabel => FormatBareHour(Block.Entry.Start.Hour);
+    private string NarrowLabel => FormatBareTime(Block.Entry.Start);
+
+    // Most mock entries fall on the hour, where minutes would just be visual noise
+    // ("9:00" vs "9") - only append :mm when the entry actually needs that precision.
+    private static string FormatBareTime(TimeOnly time)
+    {
+        var hour = FormatBareHour(time.Hour);
+        return time.Minute == 0 ? hour : $"{hour}:{time.Minute:D2}";
+    }
 
     private static string FormatBareHour(int hour) => hour switch
     {

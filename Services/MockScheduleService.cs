@@ -28,12 +28,17 @@ public class MockScheduleService : IScheduleService
         new(2, 1, DayOfWeek.Monday, new(13, 0), new(17, 0), "Sales Follow-up", "Customer B", ShiftKind.Confirmed),
         new(3, 1, DayOfWeek.Wednesday, new(7, 0), new(15, 0), "Full Shift", null, ShiftKind.Confirmed),
         new(4, 1, DayOfWeek.Friday, new(9, 0), new(11, 0), "Client Meeting", "Customer C", ShiftKind.Tentative),
+        // Sub-hour durations: the % positioning math is generic over TimeOnly, not
+        // hardcoded to the hour, so these place correctly without any extra handling.
+        new(27, 1, DayOfWeek.Tuesday, new(9, 15), new(9, 30), "Quick Check-in", null, ShiftKind.Confirmed),
 
         new(5, 2, DayOfWeek.Monday, new(7, 0), new(11, 0), "Cold Calling", null, ShiftKind.Confirmed),
         new(6, 2, DayOfWeek.Monday, new(10, 0), new(13, 0), "Follow-up Calls", null, ShiftKind.Confirmed),
         new(7, 2, DayOfWeek.Tuesday, new(7, 0), new(19, 0), "Extended Shift", null, ShiftKind.Confirmed),
         new(8, 2, DayOfWeek.Thursday, new(14, 0), new(16, 0), "Product Demo", "Customer D", ShiftKind.Confirmed),
+        new(28, 2, DayOfWeek.Friday, new(11, 15), new(11, 45), "Follow-up Call", "Customer L", ShiftKind.Tentative),
 
+        new(29, 3, DayOfWeek.Monday, new(14, 15), new(15, 0), "Strategy Session", "Customer M", ShiftKind.Confirmed),
         new(9, 3, DayOfWeek.Tuesday, new(8, 0), new(10, 0), "Client Onboarding", "Customer E", ShiftKind.Confirmed),
         new(10, 3, DayOfWeek.Tuesday, new(9, 0), new(12, 0), "Internal Training", null, ShiftKind.Tentative),
         new(11, 3, DayOfWeek.Thursday, new(7, 0), new(15, 0), "Full Shift", null, ShiftKind.Confirmed),
@@ -68,13 +73,16 @@ public class MockScheduleService : IScheduleService
         new(101, 1, DayOfWeek.Tuesday, new(7, 0), new(15, 0), "Full Shift", null, ShiftKind.Confirmed),
         new(102, 1, DayOfWeek.Thursday, new(8, 0), new(12, 0), "Front Desk Coverage", "Customer K", ShiftKind.Confirmed),
         new(103, 1, DayOfWeek.Friday, new(13, 0), new(15, 0), "Client Meeting", "Customer L", ShiftKind.Tentative),
+        new(119, 1, DayOfWeek.Monday, new(10, 15), new(10, 30), "Quick Sync", null, ShiftKind.Confirmed),
 
         new(104, 2, DayOfWeek.Monday, new(9, 0), new(13, 0), "Sales Calls", null, ShiftKind.Confirmed),
         new(105, 2, DayOfWeek.Wednesday, new(7, 0), new(19, 0), "Extended Shift", null, ShiftKind.Confirmed),
         new(106, 2, DayOfWeek.Friday, new(7, 0), new(10, 0), "Morning Prep", null, ShiftKind.Confirmed),
+        new(120, 2, DayOfWeek.Tuesday, new(15, 15), new(15, 45), "Client Call", "Customer R", ShiftKind.Tentative),
 
         new(107, 3, DayOfWeek.Monday, new(7, 0), new(9, 0), "Team Standup", null, ShiftKind.Confirmed),
         new(108, 3, DayOfWeek.Monday, new(8, 0), new(11, 0), "Client Calls", null, ShiftKind.Confirmed),
+        new(121, 3, DayOfWeek.Thursday, new(8, 15), new(9, 0), "Prep Session", "Customer S", ShiftKind.Confirmed),
         new(109, 3, DayOfWeek.Wednesday, new(10, 0), new(14, 0), "Client Onboarding", "Customer M", ShiftKind.Confirmed),
         new(110, 3, DayOfWeek.Saturday, new(9, 0), new(13, 0), "Saturday Coverage", "Customer N", ShiftKind.Confirmed),
 
@@ -96,13 +104,16 @@ public class MockScheduleService : IScheduleService
         new(201, 1, DayOfWeek.Monday, new(7, 0), new(11, 0), "Client Calls", "Customer R", ShiftKind.Confirmed),
         new(202, 1, DayOfWeek.Wednesday, new(13, 0), new(17, 0), "Sales Follow-up", "Customer S", ShiftKind.Confirmed),
         new(203, 1, DayOfWeek.Friday, new(7, 0), new(15, 0), "Full Shift", null, ShiftKind.Confirmed),
+        new(216, 1, DayOfWeek.Tuesday, new(13, 15), new(13, 30), "Quick Check-in", null, ShiftKind.Confirmed),
 
         new(204, 2, DayOfWeek.Tuesday, new(9, 0), new(13, 0), "Cold Calling", null, ShiftKind.Confirmed),
         new(205, 2, DayOfWeek.Tuesday, new(12, 0), new(14, 0), "Team Sync", null, ShiftKind.Tentative),
         new(206, 2, DayOfWeek.Thursday, new(7, 0), new(19, 0), "Extended Shift", null, ShiftKind.Confirmed),
+        new(217, 2, DayOfWeek.Wednesday, new(9, 15), new(9, 45), "Follow-up Call", "Customer Y", ShiftKind.Tentative),
 
         new(207, 3, DayOfWeek.Wednesday, new(7, 0), new(9, 0), "Store Opening", null, ShiftKind.Confirmed),
         new(208, 3, DayOfWeek.Friday, new(10, 0), new(12, 0), "Client Onboarding", "Customer T", ShiftKind.Confirmed),
+        new(218, 3, DayOfWeek.Monday, new(15, 15), new(16, 0), "Strategy Session", "Customer Z", ShiftKind.Confirmed),
 
         new(209, 4, DayOfWeek.Monday, new(8, 0), new(12, 0), "Contract Negotiation", "Customer U", ShiftKind.Confirmed),
         new(210, 4, DayOfWeek.Monday, new(11, 0), new(13, 0), "Internal Review", null, ShiftKind.Confirmed),
