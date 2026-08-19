@@ -7,17 +7,13 @@
      title="@TooltipText"
      @onclick="HandleSelect"
      @onkeydown="HandleKeyDown">
-    @if (Block.IsConflict)
-    {
-        <span class="conflict-icon" aria-hidden="true">⚠</span>
-    }
     @if (IsNarrow)
     {
-        <span class="block-time">@NarrowLabel</span>
+        <span class="block-time">@WarningPrefix@NarrowLabel</span>
     }
     else
     {
-        <span class="block-time">@CompactTimeRange</span>
+        <span class="block-time">@WarningPrefix@CompactTimeRange</span>
         <span class="block-title">@Block.Entry.Title</span>
     }
 </div>
@@ -50,27 +46,38 @@
     }
 
     /// <summary>
-    /// Short "7a–3p" style range. All mock entries fall on the hour, so minutes are
-    /// always :00 and safe to drop — this keeps the time legible even in the
-    /// narrowest (1-2 hour) blocks, where "7:00AM–9:00AM" would just get clipped.
+    /// Warning glyph rendered inline, in normal text flow, right before the time -
+    /// not absolutely positioned over the corner. An overlaid icon reserves no
+    /// space of its own, so on narrower conflict blocks it either collided with
+    /// the time text or (once a max-width was added to dodge it) ate most of the
+    /// available width and left the time itself ellipsis-truncated to 2-3 chars.
+    /// Inline, it just becomes part of the one string that gets measured and
+    /// truncated as a whole - one predictable failure mode instead of two.
     /// </summary>
-    private string CompactTimeRange => $"{FormatHour(Block.Entry.Start)}–{FormatHour(Block.Entry.End)}";
+    // U+2002 (en space), not a plain space: a regular space here can visually
+    // collapse tight against the bold glyph at this font size, and "nowrap"
+    // doesn't stop consecutive plain spaces from collapsing anyway - a fixed-
+    // width space character keeps the gap consistent instead.
+    private string WarningPrefix => Block.IsConflict ? "⚠ " : "";
+
+    /// <summary>
+    /// Short "7–3" style range using bare hour numbers - no AM/PM suffix. Every
+    /// mock entry sits inside the 7 AM-7 PM window, where the header itself
+    /// already prints bare numbers (7, 8, ... 12, 1, ... 6, 7) and the second
+    /// half is unambiguously PM, so a block's own bare "2" reads the same way.
+    /// Dropping "a"/"p" buys back the width the warning icon now costs inline,
+    /// and all mock entries fall on the hour so there are no minutes to lose.
+    /// </summary>
+    private string CompactTimeRange => $"{FormatBareHour(Block.Entry.Start.Hour)}–{FormatBareHour(Block.Entry.End.Hour)}";
 
     /// <summary>
     /// Blocks 2h or shorter don't have room for a time line *and* a legible title
-    /// line — showing both just produces two truncated fragments (e.g. "2p.." /
-    /// "Pr.."). Narrow blocks show only the start hour; full details stay one
-    /// tap/hover away via the tooltip and dialog.
+    /// line — showing both just produces two truncated fragments. Narrow blocks
+    /// show only the start hour; full details stay one tap/hover away via the
+    /// tooltip and dialog.
     /// </summary>
     private bool IsNarrow => (Block.Entry.End - Block.Entry.Start).TotalHours <= 2;
 
-    /// <summary>
-    /// Bare start hour ("8", "2") for narrow blocks — even the compact "8a–10a"
-    /// range doesn't reliably fit a ~36px 2h block (worst case "10a–12p" needs ~43px
-    /// of text in ~24px of available content width). Bare numbers also match the
-    /// header's own hour-tick formatting, so the block visually lines up with its
-    /// start tick instead of introducing a different notation.
-    /// </summary>
     private string NarrowLabel => FormatBareHour(Block.Entry.Start.Hour);
 
     private static string FormatBareHour(int hour) => hour switch
@@ -79,13 +86,6 @@
         > 12 => $"{hour - 12}",
         _ => $"{hour}",
     };
-
-    private static string FormatHour(TimeOnly t)
-    {
-        var hour12 = t.Hour % 12 == 0 ? 12 : t.Hour % 12;
-        var suffix = t.Hour < 12 ? "a" : "p";
-        return $"{hour12}{suffix}";
-    }
 
     private string TooltipText
     {
