@@ -1,5 +1,13 @@
+using System.Globalization;
 using Microsoft.AspNetCore.SignalR;
 using Cobalt.SalesAgentSchedule.Components;
+using Cobalt.SalesAgentSchedule.Services;
+
+// UI is English-only; force en-US regardless of the host OS locale so time formatting
+// (e.g. "tt" AM/PM designators, which are empty under some locales) is never locale-dependent.
+var enUs = CultureInfo.GetCultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = enUs;
+CultureInfo.DefaultThreadCurrentUICulture = enUs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +16,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddTelerikBlazor();
+builder.Services.AddSingleton<IScheduleService, MockScheduleService>();
 
 var app = builder.Build();
 

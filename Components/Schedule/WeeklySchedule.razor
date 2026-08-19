@@ -1,0 +1,32 @@
+@namespace Cobalt.SalesAgentSchedule.Components.Schedule
+
+<div class="weekly-schedule">
+    <ScheduleHeader WeekDays="WeekDays" />
+    @foreach (var agent in Agents)
+    {
+        <AgentRow Agent="agent" WeekDays="WeekDays" Layout="_layout" OnBlockSelected="OnBlockSelected" />
+    }
+</div>
+
+<TelerikTooltip TargetSelector=".schedule-block" />
+
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<SalesAgent> Agents { get; set; } = Array.Empty<SalesAgent>();
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<ScheduleEntry> Entries { get; set; } = Array.Empty<ScheduleEntry>();
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<DateOnly> WeekDays { get; set; } = Array.Empty<DateOnly>();
+
+    [Parameter]
+    public EventCallback<ScheduleEntry> OnBlockSelected { get; set; }
+
+    private ScheduleLayout _layout = ScheduleLayoutBuilder.Build(Array.Empty<ScheduleEntry>());
+
+    protected override void OnParametersSet()
+    {
+        _layout = ScheduleLayoutBuilder.Build(Entries);
+    }
+}

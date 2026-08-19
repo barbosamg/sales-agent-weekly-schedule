@@ -1,0 +1,220 @@
+.schedule-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.schedule-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.schedule-title {
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.schedule-toolbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.schedule-range {
+    font-weight: 600;
+    color: var(--kendo-color-subtle);
+    margin-right: 0.5rem;
+    min-width: 11ch;
+}
+
+.schedule-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--kendo-color-subtle);
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.legend-swatch {
+    display: inline-block;
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 3px;
+    margin-left: 0.9rem;
+    box-sizing: border-box;
+}
+
+.legend-swatch.is-confirmed {
+    background: var(--kendo-color-primary);
+}
+
+.legend-swatch.is-tentative {
+    background: var(--kendo-color-warning-subtle);
+    border: 2px dashed var(--kendo-color-warning);
+}
+
+.legend-swatch.is-conflict {
+    background: var(--kendo-color-error-subtle);
+    border: 1px solid var(--kendo-color-error);
+}
+
+::deep .weekly-schedule {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--kendo-color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--kendo-color-surface);
+}
+
+::deep .schedule-row {
+    display: grid;
+    grid-template-columns: 160px repeat(6, minmax(0, 1fr));
+    border-bottom: 1px solid var(--kendo-color-border-alt);
+}
+
+::deep .schedule-row:last-child {
+    border-bottom: none;
+}
+
+::deep .schedule-label-cell {
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--kendo-color-border-alt);
+    background: var(--kendo-color-app-surface);
+    min-width: 0;
+}
+
+::deep .schedule-header-row {
+    background: var(--kendo-color-app-surface);
+}
+
+::deep .schedule-day-header {
+    padding: 0.4rem 0.5rem 0.3rem;
+    border-right: 1px solid var(--kendo-color-border-alt);
+    min-width: 0;
+}
+
+::deep .schedule-day-header:last-child {
+    border-right: none;
+}
+
+::deep .schedule-day-title {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--kendo-color-on-app-surface);
+    display: flex;
+    justify-content: space-between;
+    white-space: nowrap;
+}
+
+::deep .schedule-day-date {
+    font-weight: 400;
+    color: var(--kendo-color-subtle);
+    font-size: 0.75rem;
+}
+
+::deep .schedule-hour-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: var(--kendo-color-subtle);
+    margin-top: 0.2rem;
+    padding: 0 1px;
+}
+
+::deep .agent-name-primary {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--kendo-color-on-app-surface);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+::deep .agent-name-role {
+    font-size: 0.72rem;
+    color: var(--kendo-color-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+::deep .schedule-day-cell {
+    position: relative;
+    border-right: 1px solid var(--kendo-color-border-alt);
+    height: calc(var(--lane-count, 1) * 46px + 10px);
+    background-image: repeating-linear-gradient(
+        to right,
+        transparent 0,
+        transparent calc(100% / 12 - 1px),
+        var(--kendo-color-border-alt) calc(100% / 12 - 1px),
+        var(--kendo-color-border-alt) calc(100% / 12)
+    );
+}
+
+::deep .schedule-day-cell:last-child {
+    border-right: none;
+}
+
+::deep .schedule-block {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.15rem 0.4rem;
+    border-radius: 5px;
+    font-size: 0.68rem;
+    line-height: 1.15;
+    color: var(--kendo-color-on-primary);
+    background: var(--kendo-color-primary);
+    border: 1px solid var(--kendo-color-primary-active);
+    cursor: pointer;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+::deep .schedule-block:focus-visible {
+    outline: 2px solid var(--kendo-color-primary-emphasis);
+    outline-offset: 1px;
+}
+
+::deep .schedule-block.is-tentative {
+    background: var(--kendo-color-warning-subtle);
+    color: var(--kendo-color-warning-on-subtle);
+    border: 1px dashed var(--kendo-color-warning);
+}
+
+::deep .schedule-block.is-conflict {
+    background: var(--kendo-color-error-subtle);
+    color: var(--kendo-color-error-on-subtle);
+    border: 1px solid var(--kendo-color-error);
+}
+
+::deep .block-time {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+::deep .block-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+::deep .conflict-icon,
+::deep .tentative-icon {
+    position: absolute;
+    top: 1px;
+    right: 3px;
+    font-size: 0.7rem;
+}

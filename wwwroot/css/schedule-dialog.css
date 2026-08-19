@@ -1,0 +1,52 @@
+/* Loaded only by the /schedule page (via HeadContent) because the Telerik
+   Window renders through TelerikRootComponent's portal, outside this app's
+   normal component tree — Blazor CSS isolation (::deep) cannot reach it. */
+
+.appointment-dialog .k-window-content {
+    padding: 1.25rem 1.5rem;
+}
+
+.appointment-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    row-gap: 0.55rem;
+    column-gap: 1rem;
+    margin: 0;
+}
+
+.appointment-details dt {
+    font-weight: 600;
+    color: var(--kendo-color-subtle);
+}
+
+.appointment-details dd {
+    margin: 0;
+}
+
+.status-pill {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid transparent;
+}
+
+.status-pill.is-confirmed {
+    background: var(--kendo-color-success-subtle);
+    color: var(--kendo-color-success-on-subtle);
+    border-color: var(--kendo-color-success);
+}
+
+.status-pill.is-tentative {
+    background: var(--kendo-color-warning-subtle);
+    color: var(--kendo-color-warning-on-subtle);
+    border-color: var(--kendo-color-warning);
+    border-style: dashed;
+}
+
+.status-pill.is-conflict {
+    background: var(--kendo-color-error-subtle);
+    color: var(--kendo-color-error-on-subtle);
+    border-color: var(--kendo-color-error);
+}

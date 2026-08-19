@@ -1,0 +1,36 @@
+@namespace Cobalt.SalesAgentSchedule.Components.Schedule
+
+<div class="schedule-row agent-row" style="--lane-count: @LaneCount;">
+    <div class="schedule-label-cell agent-name">
+        <div class="agent-name-primary">@Agent.Name</div>
+        <div class="agent-name-role">@Agent.Role</div>
+    </div>
+    @foreach (var day in WeekDays)
+    {
+        <div class="schedule-day-cell">
+            @foreach (var block in BlocksFor(day.DayOfWeek))
+            {
+                <ScheduleBlock Block="block" OnSelected="OnBlockSelected" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public SalesAgent Agent { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<DateOnly> WeekDays { get; set; } = Array.Empty<DateOnly>();
+
+    [Parameter, EditorRequired]
+    public ScheduleLayout Layout { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<ScheduleEntry> OnBlockSelected { get; set; }
+
+    private int LaneCount => Layout.LaneCountByAgent.GetValueOrDefault(Agent.Id, 1);
+
+    private IReadOnlyList<PositionedBlock> BlocksFor(DayOfWeek day) =>
+        Layout.BlocksByAgentAndDay.TryGetValue((Agent.Id, day), out var blocks) ? blocks : Array.Empty<PositionedBlock>();
+}

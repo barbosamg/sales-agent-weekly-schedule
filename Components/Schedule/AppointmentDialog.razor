@@ -1,0 +1,59 @@
+@namespace Cobalt.SalesAgentSchedule.Components.Schedule
+
+<TelerikWindow Visible="@Visible" VisibleChanged="@VisibleChanged" Width="420px" Modal="true" Class="appointment-dialog">
+    <WindowTitle>Appointment details</WindowTitle>
+    <WindowContent>
+        @if (Entry is not null)
+        {
+            <dl class="appointment-details">
+                <dt>Agent</dt>
+                <dd>@Agent?.Name</dd>
+
+                <dt>Title</dt>
+                <dd>@Entry.Title</dd>
+
+                @if (!string.IsNullOrWhiteSpace(Entry.Customer))
+                {
+                    <dt>Customer</dt>
+                    <dd>@Entry.Customer</dd>
+                }
+
+                <dt>Day</dt>
+                <dd>@(Date is { } date ? $"{date.DayOfWeek}, {date:MM/dd}" : "")</dd>
+
+                <dt>Time</dt>
+                <dd>@Entry.Start.ToString("h:mmtt") – @Entry.End.ToString("h:mmtt")</dd>
+
+                <dt>Status</dt>
+                <dd>
+                    <span class="status-pill @(IsConflict ? "is-conflict" : Entry.Kind == ShiftKind.Tentative ? "is-tentative" : "is-confirmed")">
+                        @(IsConflict ? "⚠ Scheduling conflict" : Entry.Kind == ShiftKind.Tentative ? "◌ Tentative" : "✓ Confirmed")
+                    </span>
+                </dd>
+            </dl>
+        }
+    </WindowContent>
+    <WindowActions>
+        <WindowAction Name="Close" />
+    </WindowActions>
+</TelerikWindow>
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> VisibleChanged { get; set; }
+
+    [Parameter]
+    public ScheduleEntry? Entry { get; set; }
+
+    [Parameter]
+    public SalesAgent? Agent { get; set; }
+
+    [Parameter]
+    public DateOnly? Date { get; set; }
+
+    [Parameter]
+    public bool IsConflict { get; set; }
+}

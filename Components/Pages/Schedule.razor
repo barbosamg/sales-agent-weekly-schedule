@@ -1,6 +1,100 @@
 @page "/schedule"
+@inject IScheduleService ScheduleService
 
 <PageTitle>Weekly Schedule</PageTitle>
+<HeadContent>
+    <link rel="stylesheet" href="css/schedule-dialog.css" />
+</HeadContent>
 
-<h1>Weekly Schedule</h1>
-<p>Coming soon.</p>
+<div class="schedule-page">
+    <div class="schedule-toolbar">
+        <h1 class="schedule-title">Sales Agent Weekly Schedule</h1>
+        <div class="schedule-toolbar-controls">
+            <span class="schedule-range">@WeekRangeLabel</span>
+            <TelerikButton OnClick="GoToPreviousWeek">← Previous Week</TelerikButton>
+            <TelerikButton ThemeColor="primary" OnClick="GoToCurrentWeek">Current Week</TelerikButton>
+            <TelerikButton OnClick="GoToNextWeek">Next Week →</TelerikButton>
+        </div>
+    </div>
+
+    <WeeklySchedule Agents="_agents" Entries="_entries" WeekDays="_weekDays" OnBlockSelected="HandleBlockSelected" />
+
+    <p class="schedule-legend">
+        <span class="legend-swatch is-confirmed"></span> Confirmed
+        <span class="legend-swatch is-tentative"></span> ◌ Tentative
+        <span class="legend-swatch is-conflict"></span> ⚠ Scheduling conflict
+    </p>
+</div>
+
+<AppointmentDialog Visible="_dialogVisible"
+                    VisibleChanged="@(v => _dialogVisible = v)"
+                    Entry="_selectedEntry"
+                    Agent="_selectedAgent"
+                    Date="_selectedDate"
+                    IsConflict="_selectedIsConflict" />
+
+@code {
+    private IReadOnlyList<SalesAgent> _agents = Array.Empty<SalesAgent>();
+    private IReadOnlyList<ScheduleEntry> _entries = Array.Empty<ScheduleEntry>();
+    private IReadOnlyList<DateOnly> _weekDays = Array.Empty<DateOnly>();
+    private int _weekOffset;
+
+    private bool _dialogVisible;
+    private ScheduleEntry? _selectedEntry;
+    private SalesAgent? _selectedAgent;
+    private DateOnly? _selectedDate;
+    private bool _selectedIsConflict;
+
+    protected override void OnInitialized()
+    {
+        _agents = ScheduleService.GetAgents();
+        RecalculateWeek();
+    }
+
+    private void RecalculateWeek()
+    {
+        var monday = GetMonday(DateOnly.FromDateTime(DateTime.Today)).AddDays(_weekOffset * 7);
+        _weekDays = Enumerable.Range(0, 6).Select(monday.AddDays).ToArray();
+        _entries = ScheduleService.GetEntries(_weekOffset);
+    }
+
+    private static DateOnly GetMonday(DateOnly date)
+    {
+        var diff = ((int)date.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+        return date.AddDays(-diff);
+    }
+
+    private string WeekRangeLabel => _weekDays.Count == 0
+        ? string.Empty
+        : $"{_weekDays[0]:MM/dd} – {_weekDays[^1]:MM/dd/yyyy}";
+
+    private void GoToPreviousWeek()
+    {
+        _weekOffset--;
+        RecalculateWeek();
+    }
+
+    private void GoToNextWeek()
+    {
+        _weekOffset++;
+        RecalculateWeek();
+    }
+
+    private void GoToCurrentWeek()
+    {
+        _weekOffset = 0;
+        RecalculateWeek();
+    }
+
+    private void HandleBlockSelected(ScheduleEntry entry)
+    {
+        _selectedEntry = entry;
+        _selectedAgent = _agents.FirstOrDefault(a => a.Id == entry.AgentId);
+        _selectedDate = _weekDays.FirstOrDefault(d => d.DayOfWeek == entry.Day);
+        _selectedIsConflict = _entries.Any(other => other.Id != entry.Id
+            && other.AgentId == entry.AgentId
+            && other.Day == entry.Day
+            && other.Start < entry.End && entry.Start < other.End);
+        _dialogVisible = true;
+    }
+}

@@ -1,0 +1,63 @@
+@namespace Cobalt.SalesAgentSchedule.Components.Schedule
+
+<div class="schedule-block @(Block.Entry.Kind == ShiftKind.Tentative ? "is-tentative" : "is-confirmed") @(Block.IsConflict ? "is-conflict" : "")"
+     style="@Style"
+     tabindex="0"
+     role="button"
+     title="@TooltipText"
+     @onclick="HandleSelect"
+     @onkeydown="HandleKeyDown">
+    @if (Block.IsConflict)
+    {
+        <span class="conflict-icon" aria-hidden="true">⚠</span>
+    }
+    else if (Block.Entry.Kind == ShiftKind.Tentative)
+    {
+        <span class="tentative-icon" aria-hidden="true">◌</span>
+    }
+    <span class="block-time">@Block.Entry.Start.ToString("h:mmtt")–@Block.Entry.End.ToString("h:mmtt")</span>
+    <span class="block-title">@Block.Entry.Title</span>
+</div>
+
+@code {
+    private const double LaneHeightPx = 40;
+    private const double LaneGapPx = 6;
+
+    [Parameter, EditorRequired]
+    public PositionedBlock Block { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<ScheduleEntry> OnSelected { get; set; }
+
+    private string Style
+    {
+        get
+        {
+            var startHours = Block.Entry.Start.ToTimeSpan().TotalHours - ScheduleTimes.StartHour;
+            var durationHours = (Block.Entry.End - Block.Entry.Start).TotalHours;
+            var leftPercent = startHours / ScheduleTimes.TotalHours * 100;
+            var widthPercent = durationHours / ScheduleTimes.TotalHours * 100;
+            var top = Block.Lane * (LaneHeightPx + LaneGapPx);
+
+            return $"left: calc({leftPercent.ToString(System.Globalization.CultureInfo.InvariantCulture)}% + 2px); " +
+                   $"width: calc({widthPercent.ToString(System.Globalization.CultureInfo.InvariantCulture)}% - 4px); " +
+                   $"top: {top.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; " +
+                   $"height: {LaneHeightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px;";
+        }
+    }
+
+    private string TooltipText
+    {
+        get
+        {
+            var status = Block.IsConflict ? "Scheduling conflict" : Block.Entry.Kind == ShiftKind.Tentative ? "Tentative" : "Confirmed";
+            var customer = string.IsNullOrWhiteSpace(Block.Entry.Customer) ? "" : $" • {Block.Entry.Customer}";
+            return $"{Block.Entry.Title}{customer} — {Block.Entry.Start:h:mmtt}–{Block.Entry.End:h:mmtt} — {status}";
+        }
+    }
+
+    private Task HandleSelect() => OnSelected.InvokeAsync(Block.Entry);
+
+    private Task HandleKeyDown(KeyboardEventArgs e) =>
+        e.Key is "Enter" or " " ? OnSelected.InvokeAsync(Block.Entry) : Task.CompletedTask;
+}
